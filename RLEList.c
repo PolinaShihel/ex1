@@ -9,6 +9,11 @@ typedef struct {
 
 RLEList RLEListCreate(){
     RLEList list = malloc(sizeof(*list));
-    if()
+    if(!list){
+        return NULL;
+    }
+
+
+
 
 }
