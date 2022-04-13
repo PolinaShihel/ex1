@@ -1,7 +1,14 @@
 #include "RLEList.h"
+#include <stdlib.h>
 
 typedef struct {
-    //TODO: implement
+    char letter;
+    int letterAppearances;
+    struct *RLEList_t next;
 } RLEList_t;
 
-//implement the functions here
+RLEList RLEListCreate(){
+    RLEList list = malloc(sizeof(*list));
+    if()
+
+}
