@@ -21,8 +21,8 @@ RLEList RLEListCreate() {
         free(list);
         return NULL;
     }
-    list->letter = '';
-    list->letterApearances = 0;
+    list->letter = '\0';
+    list->letterAppearances = 0;
     list->next = NULL;
     return list;
 }
@@ -33,6 +33,10 @@ void RLEListDestroy(RLEList list) {
         list = list->next;
         free(toDelete);
     }
+}
+
+bool IsListEmpty(RLEList list) {
+    return !(list->letter && list->letterAppearances);
 }
 
 RLEListResult RLEListAppend(RLEList list, char value) {
@@ -53,7 +57,14 @@ RLEListResult RLEListAppend(RLEList list, char value) {
     newLetter->letter = value;
     newLetter->letterAppearances = 1;
     newLetter->next = NULL;
-    list->next = newLetter;
+
+    if (!IsListEmpty(list)) {
+        list->next = newLetter;
+    }
+    else {
+        list->letter = newLetter->letter;
+        list->letterAppearances = newLetter->letterAppearances;
+    }
     return RLE_LIST_SUCCESS;
 }
 
@@ -85,8 +96,7 @@ RLEListResult RLEListRemove(RLEList list, int index) {
     }
     int currentIndex = 0;
     while (list) {
-        currentIndex += list->letterAppearances - INDEX_OFFSET;
-        if (currentIndex <= index) {
+        if (currentIndex >= index) {
             if (list->letterAppearances == SINGLE_APPEARANCE) {
                 previousNode->next = list->next;
                 list->next = NULL;
@@ -98,6 +108,7 @@ RLEListResult RLEListRemove(RLEList list, int index) {
             return RLE_LIST_SUCCESS;
         }
         previousNode = list;
+        currentIndex += list->letterAppearances;
         list = list->next;
     }
     return RLE_LIST_INDEX_OUT_OF_BOUNDS;
@@ -105,28 +116,34 @@ RLEListResult RLEListRemove(RLEList list, int index) {
 
 char RLEListGet(RLEList list, int index, RLEListResult* result) {
     if (!list) {
-        *result = RLE_LIST_NULL_ARGUMENT;
+        if (result) {
+            *result = RLE_LIST_NULL_ARGUMENT;
+        }
     }
+    int listSize = RLEListSize(list);
     int currentIndex = 0;
     while (list) {
-        if (index <= currentIndex - INDEX_OFFSET) {
-            *result = RLE_LIST_SUCCESS;
+        if (currentIndex <= index && index < currentIndex + list->letterAppearances) {
+            if (result) {
+                *result = RLE_LIST_SUCCESS;
+            }
             return list->letter;
         }
+        currentIndex = currentIndex + list->letterAppearances;
         list = list->next;
     }
-    *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    if (result) {
+        *result = RLE_LIST_INDEX_OUT_OF_BOUNDS;
+    }
     return 0;
 }
 
 RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
-    if (!list)
-    {
+    if (!list) {
         return RLE_LIST_NULL_ARGUMENT;
     }
     RLEList tmp = list;
-    while (tmp)
-    {
+    while (tmp) {
         tmp->letter = map_function(tmp->letter);
         tmp = tmp->next;
     }
@@ -136,24 +153,23 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
 static int GetListLength(RLEList list) {
     int length = 0;
     RLEList tmp = list;
-    while (tmp)
-    {
+    while (tmp) {
         length++;
         tmp = tmp->next;
     }
     return length;
 }
 
-int const charactersCountPerLine = NODE_DATA_STRING_LENGTH + ENTER_CHAR_LENGTH;
-char* RLEListExportToEncodedString(RLEList list, RLEListResult* result) {
-    if (!list)
-    {
-        *result = RLE_LIST_NULL_ARGUMENT;
+char* RLEListExportToString(RLEList list, RLEListResult* result) {
+    if (!list) {
+        if (result) {
+            *result = RLE_LIST_NULL_ARGUMENT;
+        }
         return NULL;
     }
-    char* str = malloc(GetListLength(list) * charactersCountPerLine * sizeof(char) + 1);
-    if (!str)
-    {
+
+    char* str = malloc((NODE_DATA_STRING_LENGTH + ENTER_CHAR_LENGTH) * GetListLength(list) * sizeof(char) + 1);
+    if (!str) {
         *result = RLE_LIST_OUT_OF_MEMORY;
         free(str);
         return NULL;
@@ -161,19 +177,19 @@ char* RLEListExportToEncodedString(RLEList list, RLEListResult* result) {
 
     RLEList tmp = list;
     int i = 0;
-    while (tmp)
-    {
+    while (tmp) {
         str[i] = tmp->letter;
         str[++i] = CONVERT_INT_TO_CHAR(tmp->letterAppearances);
-        if (tmp->next)
-        {
+        if (tmp->next) {
             str[++i] = '\n';
         }
         i++;
         tmp = tmp->next;
     }
 
-    str[i] = NULL;
-    *result = RLE_LIST_SUCCESS;
+    str[i] = '\0';
+    if (result) {
+        *result = RLE_LIST_SUCCESS;
+    }
     return str;
 }
