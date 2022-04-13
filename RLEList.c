@@ -119,13 +119,18 @@ char RLEListGet(RLEList list, int index, RLEListResult* result) {
     return 0;
 }
 
-RLEListMap(RLEList list, MapFunction map_function) {
+RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
+    if (!list)
+    {
+        return RLE_LIST_NULL_ARGUMENT;
+    }
     RLEList tmp = list;
     while (tmp)
     {
         tmp->letter = map_function(tmp->letter);
         tmp = tmp->next;
     }
+    return RLE_LIST_SUCCESS;
 }
 
 static int GetListLength(RLEList list) {
@@ -140,7 +145,7 @@ static int GetListLength(RLEList list) {
 }
 
 int const charactersCountPerLine = NODE_DATA_STRING_LENGTH + ENTER_CHAR_LENGTH;
-RLEListExportToEncodedString(RLEList list, RLEListResult* result) {
+char* RLEListExportToEncodedString(RLEList list, RLEListResult* result) {
     if (!list)
     {
         *result = RLE_LIST_NULL_ARGUMENT;
@@ -172,4 +177,3 @@ RLEListExportToEncodedString(RLEList list, RLEListResult* result) {
     *result = RLE_LIST_SUCCESS;
     return str;
 }
-
