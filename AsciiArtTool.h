@@ -4,14 +4,6 @@
 #include <stdio.h>
 
 /**
-  The following functions are available :
-* asciiArtRead - Creates an RLEList out of a file
-* asciiArtPrint: Writes the whole picture to the file stream using the
-* given list that represents the compressed picture
-* asciiArtPrintEncoded: Writes to file the picture in a compressed format.
-* /
-
-/**
  * asciiArtRead: creates an RLEList out of a file
  *
  * The function receives a FILE pointer and reads the contents of the file letter
@@ -24,26 +16,19 @@
 RLEList asciiArtRead(FILE* in_stream);
 
 /**
-* asciiArtPrint: Writes the whole picture to the file stream using the
-* given list that represents the compressed picture
-*
-* @list - An RLEList that contains the file's characters
-* @out_stream - The stream that the picture will be written to
-* @return
-* 	RLE_LIST_NULL_ARGUMENT if a NULL was sent as one of the parameters
-* 	RLE_LIST_OUT_OF_MEMORY if a memory allocation has failed
-* 	RLE_LIST_SUCCESS if the picture has been written to the file successfully
-*/
-RLEListResult asciiArtPrint(RLEList list, FILE* out_stream);
-
-/**
-* asciiArtPrintEncoded: Writes to file the picture in a compressed format.
-*
-* The compressed format corresponds to the type returned from the
-* RLEListExportString that's implemented in the RLEList.c file
-*
-* @return
-*
-*/
+ * asciiArtPrintEncoded: Writes to file the picture in a compressed format.
+ *
+ * The function prints out the compressed format corresponds to the type returned from the
+ * RLEListExportString that's implemented in the RLEList.c file into a file that was received as a pointer
+ *
+ * @param list - RLE list containing the ASCIIArt image in a RLEList struct
+ * @param out_stream  - FILE pointer to e file chosen to contain the compressed ascii image format
+ * @return
+ * 	RLE_LIST_NULL_ARGUMENT if a NULL was sent as one of the parameters
+ * 	RLE_LIST_OUT_OF_MEMORY if an allocation failed in the function used to create the compressed image
+ * 	RLE_LIST_SUCCESS if the compressed list was input into the file successfully
+ * 	RLE_LIST_ERROR if the file was opened with insufficient privileges
+ */
 RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream);
+
 #endif //ASCIIARTTOOL_H
