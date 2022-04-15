@@ -3,6 +3,19 @@
 
 #include <stdio.h>
 
+/**
+ * asciiArtRead: creates an RLEList out of a file
+ *
+ * The function receives a FILE pointer and reads the contents of the file letter
+ * by letter and appends each letter to a created empty RLEList.
+ *
+ * @param in_stream - FILE pointer to be used to get the contents of the file holding the asciiArt
+ * @return
+ *       RLE list containing the ASCIIArt in it's compressed state
+ */
+RLEList asciiArtRead(FILE* in_stream);
+
+
 
 /**
 * asciiArtPrintEncoded: Writes to file the picture in a compressed format.
