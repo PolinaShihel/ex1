@@ -35,7 +35,7 @@ void RLEListDestroy(RLEList list) {
     }
 }
 
-bool IsListEmpty(RLEList list) {
+static bool IsListEmpty(RLEList list) {
     return !(list->letter && list->letterAppearances);
 }
 
@@ -143,21 +143,33 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
         return RLE_LIST_NULL_ARGUMENT;
     }
     RLEList tmp = list;
+    RLEList previousNode;
     while (tmp) {
-        tmp->letter = map_function(tmp->letter);
-        tmp = tmp->next;
+        char newLetter = map_function(tmp->letter);
+        if (previousNode && previuosNode == newLetter) {
+            RLEList nodeToDelete = tmp;
+            previuosNode->letterAppearances += nodeToDelete->letterAppearances;
+            previousNode->next = nodeToDelete->next;
+            tmp = nodeToDelete->next;
+            free(nodeToDelete);
+        }
+        else {
+            tmp->letter = newLetter;
+            previousNode = tmp;
+            tmp = tmp->next;
+        }
     }
     return RLE_LIST_SUCCESS;
 }
 
-static int GetListLength(RLEList list) {
-    int length = 0;
+static int GetListActualLength(RLEList list) {
+    int actualLength = 0;
     RLEList tmp = list;
     while (tmp) {
-        length++;
+        actualLength++;
         tmp = tmp->next;
     }
-    return length;
+    return actualLength;
 }
 
 char* RLEListExportToString(RLEList list, RLEListResult* result) {
