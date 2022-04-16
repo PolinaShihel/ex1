@@ -142,21 +142,21 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
     if (!list) {
         return RLE_LIST_NULL_ARGUMENT;
     }
-    RLEList tmp = list;
+    RLEList temp = list;
     RLEList previousNode;
-    while (tmp) {
-        char newLetter = map_function(tmp->letter);
+    while (temp) {
+        char newLetter = map_function(temp->letter);
         if (previousNode && previuosNode == newLetter) {
-            RLEList nodeToDelete = tmp;
+            RLEList nodeToDelete = temp;
             previuosNode->letterAppearances += nodeToDelete->letterAppearances;
             previousNode->next = nodeToDelete->next;
-            tmp = nodeToDelete->next;
+            temp = nodeToDelete->next;
             free(nodeToDelete);
         }
         else {
-            tmp->letter = newLetter;
-            previousNode = tmp;
-            tmp = tmp->next;
+            temp->letter = newLetter;
+            previousNode = temp;
+            temp = temp->next;
         }
     }
     return RLE_LIST_SUCCESS;
@@ -164,10 +164,10 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
 
 static int GetListActualLength(RLEList list) {
     int actualLength = 0;
-    RLEList tmp = list;
-    while (tmp) {
+    RLEList temp = list;
+    while (temp) {
         actualLength++;
-        tmp = tmp->next;
+        temp = temp->next;
     }
     return actualLength;
 }
@@ -187,16 +187,16 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         return NULL;
     }
 
-    RLEList tmp = list;
+    RLEList temp = list;
     int i = 0;
-    while (tmp) {
-        str[i] = tmp->letter;
-        str[++i] = CONVERT_INT_TO_CHAR(tmp->letterAppearances);
-        if (tmp->next) {
+    while (temp) {
+        str[i] = temp->letter;
+        str[++i] = CONVERT_INT_TO_CHAR(temp->letterAppearances);
+        if (temp->next) {
             str[++i] = '\n';
         }
         i++;
-        tmp = tmp->next;
+        temp = temp->next;
     }
 
     str[i] = '\0';
