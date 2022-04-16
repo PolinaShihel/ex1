@@ -1,7 +1,7 @@
 CC = gcc
 OBJS = RLEList.o AsciiArtTool.o
 EXEC = AsciiArtTool
-DEBUG_FLAG =
+DEBUG_FLAG = -DNDEBUG
 COMP_FLAG = -std=c99 -Wall -Werror
 
 $(EXEC) : $(OBJS)
