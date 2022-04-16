@@ -2,9 +2,23 @@
 #define ASCIIARTTOOL_H
 
 #include <stdio.h>
+#include <stdlib.h>
+#include "RLEList.h"
 
 /**
- * asciiArtRead: creates an RLEList out of a file
+* Read & Write ASCII ART Drawings interface
+*
+* Implements an Ascii Art Tool to allow a simple reading & writing compressed / uncompressed
+* ASCII ARTs process.
+*
+* The following functions are available:
+*	asciiArtRead			- Creates an RLEList out of a file.
+*	asciiArtPrint			- Writes to file the drawing whose compressed format is represented by the given list.
+*	asciiArtPrintEncoded	- Writes to file the picture in a compressed format.
+* /
+
+/**
+ * asciiArtRead: Creates an RLEList out of a file
  *
  * The function receives a FILE pointer and reads the contents of the file letter
  * by letter and appends each letter to a created empty RLEList.
@@ -14,6 +28,19 @@
  *       RLE list containing the ASCIIArt in it's compressed state
  */
 RLEList asciiArtRead(FILE* in_stream);
+
+/**
+* asciiArtPrint: Writes to file the drawing whose compressed format
+* is represented by the given list.
+*
+* @list - An RLEList that contains the file's characters
+* @out_stream - The stream that the picture will be written to
+* @return
+* 	RLE_LIST_NULL_ARGUMENT if a NULL was sent as one of the parameters
+* 	RLE_LIST_OUT_OF_MEMORY if a memory allocation has failed
+* 	RLE_LIST_SUCCESS if the picture has been written to the file successfully
+*/
+RLEListResult asciiArtPrint(RLEList list, FILE* out_stream);
 
 /**
  * asciiArtPrintEncoded: Writes to file the picture in a compressed format.
@@ -29,6 +56,6 @@ RLEList asciiArtRead(FILE* in_stream);
  * 	RLE_LIST_SUCCESS if the compressed list was input into the file successfully
  * 	RLE_LIST_ERROR if the file was opened with insufficient privileges
  */
-RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream);
+RLEListResult asciiArtPrintEncoded(RLEList list, FILE* out_stream);
 
 #endif //ASCIIARTTOOL_H
