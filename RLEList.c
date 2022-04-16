@@ -1,8 +1,8 @@
 #include "RLEList.h"
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
-#define INDEX_OFFSET 1
 #define SINGLE_APPEARANCE 1
 #define NODE_DATA_STRING_LENGTH 2
 #define ENTER_CHAR_LENGTH 1
@@ -69,8 +69,7 @@ RLEListResult RLEListAppend(RLEList list, char value) {
 }
 
 int RLEListSize(RLEList list) {
-    if (!list)
-    {
+    if (!list) {
         return -1;
     }
     int totalCharacters = 0;
@@ -121,6 +120,7 @@ char RLEListGet(RLEList list, int index, RLEListResult* result) {
         }
     }
     int listSize = RLEListSize(list);
+    assert(listSize > 0);
     int currentIndex = 0;
     while (list) {
         if (currentIndex <= index && index < currentIndex + list->letterAppearances) {
@@ -143,12 +143,12 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
         return RLE_LIST_NULL_ARGUMENT;
     }
     RLEList temp = list;
-    RLEList previousNode;
+    RLEList previousNode = NULL;
     while (temp) {
         char newLetter = map_function(temp->letter);
-        if (previousNode && previuosNode == newLetter) {
+        if (previousNode && previousNode == newLetter) {
             RLEList nodeToDelete = temp;
-            previuosNode->letterAppearances += nodeToDelete->letterAppearances;
+            previousNode->letterAppearances += nodeToDelete->letterAppearances;
             previousNode->next = nodeToDelete->next;
             temp = nodeToDelete->next;
             free(nodeToDelete);

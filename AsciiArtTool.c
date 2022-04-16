@@ -8,9 +8,14 @@ RLEList asciiArtRead(FILE* in_stream)
     }
     char currentLetter;
     RLEList compressedImage = RLEListCreate();
+    if (!compressedImage) {
+        return NULL;
+    }
     do {
         currentLetter = fgetc(in_stream);
-        RLEListAppend(compressedImage, currentLetter);
+        if (RLEListAppend(compressedImage, currentLetter) != RLE_LIST_SUCCESS) {
+            return NULL;
+        }
     } while (currentLetter != EOF);
     return compressedImage;
 }
