@@ -2,7 +2,8 @@
 #include "RLEList.h"
 RLEList asciiArtRead(FILE* in_stream)
 {
-    if(!in_stream){
+    if(!in_stream){//instructed to return null if the file pointer is invalid
+        return NULL;
     }
     char currentLetter;
     RLEList compressedImage = RLEListCreate();
@@ -51,9 +52,7 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE *out_stream)
     {
         return errorCode;
     }
-    if(0 > fprintf(out_stream,"%s",compressedImage)){
-        return RLE_LIST_ERROR;//if the file was opened with insufficient privileges
-    }
+    fprintf(out_stream,"%s",compressedImage);
     free(compressedImage);
     return RLE_LIST_SUCCESS;
 }
