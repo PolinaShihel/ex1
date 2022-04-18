@@ -180,7 +180,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         return NULL;
     }
 
-    char* str = malloc((NODE_DATA_STRING_LENGTH + ENTER_CHAR_LENGTH) * GetListLength(list) * sizeof(char) + 1);
+    char* str = malloc((NODE_DATA_STRING_LENGTH + ENTER_CHAR_LENGTH) * GetListActualLength(list) * sizeof(char) + 1);
     if (!str) {
         *result = RLE_LIST_OUT_OF_MEMORY;
         free(str);

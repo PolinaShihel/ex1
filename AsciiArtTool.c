@@ -32,12 +32,15 @@ RLEListResult asciiArtPrint(RLEList list, FILE* out_stream)
     }
 
     char* picturePointer = picture;
-    while (list) {
-        while (list->letterAppearances--) {
-            *picturePointer = list->letter;
-            picturePointer++;
+    int listSize = RLEListSize(list);
+    for (int i = 0; i < listSize; i++) {
+        RLEListResult result;
+        char currentLetter = RLEListGet(list, i, &result);
+        if (result != RLE_LIST_SUCCESS) {
+            return result;
         }
-        list = list->next;
+        *picturePointer = currentLetter;
+        picturePointer++;
     }
     *picturePointer = '\0';
 
