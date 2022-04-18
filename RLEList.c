@@ -50,6 +50,7 @@ RLEListResult RLEListAppend(RLEList list, char value) {
     }
     RLEList newLetter = malloc(sizeof(*newLetter));
     if (!newLetter) {
+        free(newLetter);
         return RLE_LIST_OUT_OF_MEMORY;
     }
     newLetter->letter = value;
@@ -63,6 +64,7 @@ RLEListResult RLEListAppend(RLEList list, char value) {
         list->letter = newLetter->letter;
         list->letterAppearances = newLetter->letterAppearances;
     }
+    free(newLetter)
     return RLE_LIST_SUCCESS;
 }
 
