@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "RLEList.h"
 
-/**
+/*
 * Read & Write ASCII ART Drawings interface
 *
 * Implements an Ascii Art Tool to allow a simple reading & writing compressed / uncompressed
@@ -15,9 +15,9 @@
 *	asciiArtRead			- Creates an RLEList out of a file.
 *	asciiArtPrint			- Writes to file the drawing whose compressed format is represented by the given list.
 *	asciiArtPrintEncoded	- Writes to file the picture in a compressed format.
-* /
+*/
 
-/**
+/*
  * asciiArtRead: Creates an RLEList out of a file
  *
  * The function receives a FILE pointer and reads the contents of the file letter

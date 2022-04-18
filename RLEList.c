@@ -119,8 +119,6 @@ char RLEListGet(RLEList list, int index, RLEListResult* result) {
             *result = RLE_LIST_NULL_ARGUMENT;
         }
     }
-    int listSize = RLEListSize(list);
-    assert(listSize > 0);
     int currentIndex = 0;
     while (list) {
         if (currentIndex <= index && index < currentIndex + list->letterAppearances) {
@@ -146,7 +144,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
     RLEList previousNode = NULL;
     while (temp) {
         char newLetter = map_function(temp->letter);
-        if (previousNode && previousNode == newLetter) {
+        if (previousNode && previousNode->letter == newLetter) {
             RLEList nodeToDelete = temp;
             previousNode->letterAppearances += nodeToDelete->letterAppearances;
             previousNode->next = nodeToDelete->next;
