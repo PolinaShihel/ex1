@@ -64,7 +64,7 @@ RLEListResult RLEListAppend(RLEList list, char value) {
         list->letter = newLetter->letter;
         list->letterAppearances = newLetter->letterAppearances;
     }
-    free(newLetter)
+    free(newLetter);
     return RLE_LIST_SUCCESS;
 }
 
