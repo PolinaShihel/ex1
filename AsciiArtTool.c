@@ -33,7 +33,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE* out_stream)
 
     char* picturePointer = picture;
     while (list) {
-        while (list->letterAppearances--) {
+        while (list-> letterAppearances--) {
             *picturePointer = list->letter;
             picturePointer++;
         }

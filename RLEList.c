@@ -94,12 +94,14 @@ RLEListResult RLEListRemove(RLEList list, int index) {
         }
     }
     int currentIndex = 0;
+    //check if after removal the letter before and letter after are the same (merging them)
     while (list) {
         if (currentIndex >= index) {
             if (list->letterAppearances == SINGLE_APPEARANCE) {
-                previousNode->next = list->next;
-                list->next = NULL;
-                free(list);
+                RLEList tempNode =list;
+                previousNode->next = tempNode->next;
+                tempNode->next = NULL;
+                free(tempNode);
             }
             else {
                 list->letterAppearances--;
@@ -146,7 +148,7 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
     RLEList previousNode = NULL;
     while (temp) {
         char newLetter = map_function(temp->letter);
-        if (previousNode && previousNode == newLetter) {
+        if (previousNode->letter && previousNode->letter == newLetter) {
             RLEList nodeToDelete = temp;
             previousNode->letterAppearances += nodeToDelete->letterAppearances;
             previousNode->next = nodeToDelete->next;
@@ -180,7 +182,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         return NULL;
     }
 
-    char* str = malloc((NODE_DATA_STRING_LENGTH + ENTER_CHAR_LENGTH) * GetListLength(list) * sizeof(char) + 1);
+    char* str = malloc((NODE_DATA_STRING_LENGTH + ENTER_CHAR_LENGTH) * GetListActualLength(list) * sizeof(char) + 1);
     if (!str) {
         *result = RLE_LIST_OUT_OF_MEMORY;
         free(str);
