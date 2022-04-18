@@ -15,7 +15,7 @@
 *	asciiArtRead			- Creates an RLEList out of a file.
 *	asciiArtPrint			- Writes to file the drawing whose compressed format is represented by the given list.
 *	asciiArtPrintEncoded	- Writes to file the picture in a compressed format.
-* /
+*/
 
 /**
  * asciiArtRead: Creates an RLEList out of a file

@@ -1,7 +1,5 @@
 #include "RLEList.h"
 #include <stdlib.h>
-#include <string.h>
-#include <assert.h>
 
 #define SINGLE_APPEARANCE 1
 #define NODE_DATA_STRING_LENGTH 2
@@ -121,8 +119,6 @@ char RLEListGet(RLEList list, int index, RLEListResult* result) {
             *result = RLE_LIST_NULL_ARGUMENT;
         }
     }
-    int listSize = RLEListSize(list);
-    assert(listSize > 0);
     int currentIndex = 0;
     while (list) {
         if (currentIndex <= index && index < currentIndex + list->letterAppearances) {
