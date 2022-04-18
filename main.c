@@ -1,5 +1,6 @@
 #include "AsciiArtTool.h"
 #include <assert.h>
+#include <string.h>
 
 #define ERROR_CODE -1
 #define EXPECTED_ARGUMENTS_COUNT 3
@@ -38,13 +39,13 @@ int main(int argc, char** argv) {
         return ERROR_CODE;
     }
 
-    if (argv[FLAG_ARG_INDEX] == ENCODED_FLAG) {
+    if (strcmp(argv[FLAG_ARG_INDEX], ENCODED_FLAG) == 0) {
         if (asciiArtPrint(orignialArt, targetFileStream) != RLE_LIST_SUCCESS) {
             RLEListDestroy(orignialArt);
             return ERROR_CODE;
         }
     }
-    else if (argv[FLAG_ARG_INDEX] == INVERTED_FLAG) {
+    else if (strcmp(argv[FLAG_ARG_INDEX], INVERTED_FLAG) == 0) {
         if (RLEListMap(orignialArt, invertedRLEList) != RLE_LIST_SUCCESS ||
             asciiArtPrintEncoded(orignialArt, targetFileStream) != RLE_LIST_SUCCESS) {
             RLEListDestroy(orignialArt);
