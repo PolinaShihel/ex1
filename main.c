@@ -32,8 +32,8 @@ char invertedRLEList(char originalLetter) {
 int main(int argc, char** argv) {
     assert(argc == EXPECTED_ARGUMENTS_COUNT);
 
-    FILE* sourceFileStream = fopen(argv[SOURCE_ARG_INDEX], "%r");
-    FILE* targetFileStream = fopen(argv[TARGET_ARG_INDEX], "%w");
+    FILE* sourceFileStream = fopen(argv[SOURCE_ARG_INDEX], "r");
+    FILE* targetFileStream = fopen(argv[TARGET_ARG_INDEX], "w");
     RLEList orignialArt = asciiArtRead(sourceFileStream);
     if (!orignialArt) {
         return ERROR_CODE;
