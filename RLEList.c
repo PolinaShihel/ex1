@@ -29,6 +29,7 @@ void RLEListDestroy(RLEList list) {
     while (list) {
         RLEList toDelete = list;
         list = list->next;
+        toDelete->next = NULL;
         free(toDelete);
     }
 }
@@ -64,7 +65,6 @@ RLEListResult RLEListAppend(RLEList list, char value) {
         list->letter = newLetter->letter;
         list->letterAppearances = newLetter->letterAppearances;
     }
-    free(newLetter);
     return RLE_LIST_SUCCESS;
 }
 
@@ -146,7 +146,8 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
     RLEList previousNode = NULL;
     while (temp) {
         char newLetter = map_function(temp->letter);
-        if (previousNode->letter && previousNode->letter == newLetter) {
+
+        if ((previousNode)&&(previousNode->letter == newLetter && temp->letter == newLetter)) {
             RLEList nodeToDelete = temp;
             previousNode->letterAppearances += nodeToDelete->letterAppearances;
             previousNode->next = nodeToDelete->next;

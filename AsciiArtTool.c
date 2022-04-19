@@ -5,17 +5,17 @@ RLEList asciiArtRead(FILE* in_stream)
     if (!in_stream) {//instructed to return null if the file pointer is invalid
         return NULL;
     }
-    char currentLetter;
+    char currentLetter = fgetc(in_stream);
     RLEList compressedImage = RLEListCreate();
     if (!compressedImage) {
         return NULL;
     }
-    do {
-        currentLetter = fgetc(in_stream);
+    while (currentLetter != EOF){
         if (RLEListAppend(compressedImage, currentLetter) != RLE_LIST_SUCCESS) {
             return NULL;
         }
-    } while (currentLetter != EOF);
+        currentLetter = fgetc(in_stream);
+    }
     return compressedImage;
 }
 
@@ -25,7 +25,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE* out_stream)
         return RLE_LIST_NULL_ARGUMENT;
     }
 
-    char* picture = malloc((RLEListSize(list) + 1) * sizeof(char));
+    char* picture = malloc((RLEListSize(list) + 2) * sizeof(char));
     if (!picture) {
         return RLE_LIST_OUT_OF_MEMORY;
     }
@@ -41,6 +41,7 @@ RLEListResult asciiArtPrint(RLEList list, FILE* out_stream)
         *picturePointer = currentLetter;
         picturePointer++;
     }
+    *picturePointer = '\n';
     *picturePointer = '\0';
 
     int fputsResult = fputs(picture, out_stream) == EOF ? RLE_LIST_ERROR : RLE_LIST_SUCCESS;
@@ -58,7 +59,7 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE* out_stream)
     if (errorCode != RLE_LIST_SUCCESS) {
         return errorCode;
     }
-    fprintf(out_stream, "%s", compressedImage);
+    fprintf(out_stream, "%s\n", compressedImage);
     free(compressedImage);
     return RLE_LIST_SUCCESS;
 }
