@@ -31,6 +31,10 @@ char invertedRLEList(char originalLetter) {
 
 int main(int argc, char** argv) {
     assert(argc == EXPECTED_ARGUMENTS_COUNT);
+    if(argc != EXPECTED_ARGUMENTS_COUNT){
+        printf("insufficient amount of parameters given");
+        return  ERROR_CODE
+    }
 
     FILE* sourceFileStream = fopen(argv[SOURCE_ARG_INDEX], "r");
     FILE* targetFileStream = fopen(argv[TARGET_ARG_INDEX], "w");
