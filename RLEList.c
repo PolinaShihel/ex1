@@ -1,11 +1,10 @@
 #include "RLEList.h"
 #include <stdlib.h>
+#include <string.h>
 
 #define SINGLE_APPEARANCE 1
 #define NODE_DATA_STRING_LENGTH 2
 #define ENTER_CHAR_LENGTH 1
-
-#define CONVERT_INT_TO_CHAR(x) x + '0'
 
 struct RLEList_t {
     char letter;
@@ -57,20 +56,26 @@ RLEListResult RLEListAppend(RLEList list, char value) {
     return RLE_LIST_SUCCESS;
 }
 
+static RLEList GetFirstNode(RLEList list) {
+    return list->next;
+}
+
 int RLEListSize(RLEList list) {
     if (!list) {
         return -1;
     }
     int totalCharacters = 0;
+    list = GetFirstNode(list);
     while (list) {
         totalCharacters += list->letterAppearances;
         list = list->next;
     }
     return totalCharacters;
 }
+
 static void mergeNodes(RLEList previous_node, RLEList next_node)
 {
-    previous_node->letterAppearances+=next_node->letterAppearances;
+    previous_node->letterAppearances += next_node->letterAppearances;
     previous_node->next = next_node->next;
     next_node->next = NULL;
     free(next_node);
@@ -81,17 +86,17 @@ RLEListResult RLEListRemove(RLEList list, int index) {
         return RLE_LIST_NULL_ARGUMENT;
     }
     RLEList previousNode = list;
-    list = list->next;
+    list = GetFirstNode(list);
     int currentIndex = 0;
     //check if after removal the letter before and letter after are the same (merging them)
     while (list) {
         if (currentIndex >= index) {
             if (list->letterAppearances == SINGLE_APPEARANCE) {
-                RLEList tempNode =list;
+                RLEList tempNode = list;
                 previousNode->next = tempNode->next;
                 tempNode->next = NULL;
                 free(tempNode);
-                if(previousNode->letter == previousNode->next->letter){
+                if (previousNode && previousNode->next && previousNode->letter == previousNode->next->letter) {
                     mergeNodes(previousNode, previousNode->next);
                 }
             }
@@ -112,8 +117,9 @@ char RLEListGet(RLEList list, int index, RLEListResult* result) {
         if (result) {
             *result = RLE_LIST_NULL_ARGUMENT;
         }
+        return 0;
     }
-    list = list->next;
+    list = GetFirstNode(list);
     int currentIndex = 0;
     while (list) {
         if (currentIndex <= index && index < currentIndex + list->letterAppearances) {
@@ -132,14 +138,14 @@ char RLEListGet(RLEList list, int index, RLEListResult* result) {
 }
 
 RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
-    if (!list) {
+    if (!list || !map_function) {
         return RLE_LIST_NULL_ARGUMENT;
     }
     RLEList temp = list;
     RLEList previousNode = NULL;
     while (temp) {
         char newLetter = map_function(temp->letter);
-        if ((previousNode)&&(previousNode->letter == newLetter && temp->letter == newLetter)) {
+        if ((previousNode) && (previousNode->letter == newLetter && temp->letter == newLetter)) {
             RLEList nodeToDelete = temp;
             previousNode->letterAppearances += nodeToDelete->letterAppearances;
             previousNode->next = nodeToDelete->next;
@@ -155,11 +161,24 @@ RLEListResult RLEListMap(RLEList list, MapFunction map_function) {
     return RLE_LIST_SUCCESS;
 }
 
-static int GetListActualLength(RLEList list) {
+int GetDigitsCount(unsigned int n) {
+    int count = 1;
+    while (n > 9) {
+        n /= 10;
+        count++;
+    }
+    return count;
+}
+
+static int GetLengthOfExportedString(RLEList list) {
+    int characterLength = 1;
+    int enterCharLength = 1;
     int actualLength = 0;
-    RLEList temp = list ->next;
+    RLEList temp = list->next;
     while (temp) {
         actualLength++;
+        actualLength += GetDigitsCount(temp->letterAppearances);
+        actualLength += characterLength + enterCharLength;
         temp = temp->next;
     }
     return actualLength;
@@ -173,22 +192,20 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         return NULL;
     }
 
-    char* str = malloc((NODE_DATA_STRING_LENGTH + ENTER_CHAR_LENGTH) * GetListActualLength(list) * sizeof(char) + 1);
+    char* str = malloc(GetLengthOfExportedString(list) * sizeof(char) + 1);
     if (!str) {
         *result = RLE_LIST_OUT_OF_MEMORY;
         free(str);
         return NULL;
     }
-    list = list->next;
+    list = GetFirstNode(list);
     RLEList temp = list;
     int i = 0;
     while (temp) {
         str[i] = temp->letter;
-        str[++i] = CONVERT_INT_TO_CHAR(temp->letterAppearances);
-        if (temp->next) {
-            str[++i] = '\n';
-        }
-        i++;
+        sprintf(str + (++i), "%d", temp->letterAppearances);
+        i += GetDigitsCount(temp->letterAppearances);
+        str[i++] = '\n';
         temp = temp->next;
     }
 
