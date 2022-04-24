@@ -205,8 +205,10 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         str[i] = temp->letter;
         sprintf(str + (++i), "%d", temp->letterAppearances);
         i += GetDigitsCount(temp->letterAppearances);
-        str[i++] = '\n';
         temp = temp->next;
+        if(temp){
+            str[i++] = '\n';
+        }
     }
 
     str[i] = '\0';
