@@ -1,11 +1,11 @@
 #include "AsciiArtTool.h"
 
-RLEList asciiArtRead(FILE* inStream)
+RLEList asciiArtRead(FILE* in_stream)
 {
-    if (!inStream) {//instructed to return null if the file pointer is invalid
+    if (!in_stream) {//instructed to return null if the file pointer is invalid
         return NULL;
     }
-    char currentLetter = fgetc(inStream);
+    char currentLetter = fgetc(in_stream);
     RLEList compressedImage = RLEListCreate();
     if (!compressedImage) {
         return NULL;
@@ -14,14 +14,14 @@ RLEList asciiArtRead(FILE* inStream)
         if (RLEListAppend(compressedImage, currentLetter) != RLE_LIST_SUCCESS) {
             return NULL;
         }
-        currentLetter = fgetc(inStream);
+        currentLetter = fgetc(in_stream);
     }
     return compressedImage;
 }
 
-RLEListResult asciiArtPrint(RLEList list, FILE* outStream)
+RLEListResult asciiArtPrint(RLEList list, FILE* out_stream)
 {
-    if (!list || !outStream) {
+    if (!list || !out_stream) {
         return RLE_LIST_NULL_ARGUMENT;
     }
 
@@ -44,14 +44,14 @@ RLEListResult asciiArtPrint(RLEList list, FILE* outStream)
     *picturePointer = '\n';
     *picturePointer = '\0';
 
-    int fputsResult = fputs(picture, outStream) == EOF ? RLE_LIST_ERROR : RLE_LIST_SUCCESS;
+    int fputsResult = fputs(picture, out_stream) == EOF ? RLE_LIST_ERROR : RLE_LIST_SUCCESS;
     free(picture);
     return fputsResult;
 }
 
-RLEListResult asciiArtPrintEncoded(RLEList list, FILE* outStream)
+RLEListResult asciiArtPrintEncoded(RLEList list, FILE* out_stream)
 {
-    if (!list || !outStream) {
+    if (!list || !out_stream) {
         return RLE_LIST_NULL_ARGUMENT;
     }
     RLEListResult errorCode;
@@ -59,7 +59,7 @@ RLEListResult asciiArtPrintEncoded(RLEList list, FILE* outStream)
     if (errorCode != RLE_LIST_SUCCESS) {
         return errorCode;
     }
-    fprintf(outStream, "%s\n", compressedImage);
+    fprintf(out_stream, "%s", compressedImage);
     free(compressedImage);
     return RLE_LIST_SUCCESS;
 }

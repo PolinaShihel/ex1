@@ -140,11 +140,12 @@ RLEListResult RLEListMap(RLEList list, MapFunction mapFunction) {
     if (!list || !mapFunction) {
         return RLE_LIST_NULL_ARGUMENT;
     }
+    list = GetFirstNode(list);
     RLEList temp = list;
     RLEList previousNode = NULL;
     while (temp) {
         char newLetter = mapFunction(temp->letter);
-        if ((previousNode) && (previousNode->letter == newLetter && temp->letter == newLetter)) {
+        if ((previousNode) && (previousNode->letter == newLetter)){//} && temp->letter == newLetter)) {
             RLEList nodeToDelete = temp;
             previousNode->letterAppearances += nodeToDelete->letterAppearances;
             previousNode->next = nodeToDelete->next;
@@ -182,9 +183,7 @@ static int GetLengthOfExportedString(RLEList list) {
     }
     return actualLength;
 }
-static char checkSpecialCharacter(char letter){
 
-}
 char* RLEListExportToString(RLEList list, RLEListResult* result) {
     if (!list) {
         if (result) {
@@ -208,9 +207,7 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         sprintf(str + (++i), "%d", temp->letterAppearances);
         i += GetDigitsCount(temp->letterAppearances);
         temp = temp->next;
-        if(temp){
-            str[i++] = '\n';
-        }
+        str[i++] = '\n';
     }
 
     str[i] = '\0';
