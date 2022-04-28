@@ -88,9 +88,9 @@ RLEListResult RLEListRemove(RLEList list, int index) {
     RLEList previousNode = list;
     list = GetFirstNode(list);
     int currentIndex = 0;
-    //check if after removal the letter before and letter after are the same (merging them)
     while (list) {
-        if (currentIndex >= index) {
+        currentIndex += list->letterAppearances;
+        if (currentIndex > index) {
             if (list->letterAppearances == SINGLE_APPEARANCE) {
                 RLEList tempNode = list;
                 previousNode->next = tempNode->next;
@@ -106,7 +106,6 @@ RLEListResult RLEListRemove(RLEList list, int index) {
             return RLE_LIST_SUCCESS;
         }
         previousNode = list;
-        currentIndex += list->letterAppearances;
         list = list->next;
     }
     return RLE_LIST_INDEX_OUT_OF_BOUNDS;
@@ -192,8 +191,20 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         return NULL;
     }
 
-    char* str = malloc(GetLengthOfExportedString(list) * sizeof(char) + 1);
-    if (!str) {
+    char* str = malloc(GetLengthOfExportedString(list) * sizeof(char) + 1);t;
+    if(temp){
+        str[i++] = '\n';
+    }
+}
+
+str[i] = '\0';
+if (result) {
+*result = RLE_LIST_SUCCESS;
+}
+return str;
+}
+
+if (!str) {
         *result = RLE_LIST_OUT_OF_MEMORY;
         free(str);
         return NULL;
@@ -205,15 +216,4 @@ char* RLEListExportToString(RLEList list, RLEListResult* result) {
         str[i] = temp->letter;
         sprintf(str + (++i), "%d", temp->letterAppearances);
         i += GetDigitsCount(temp->letterAppearances);
-        temp = temp->next;
-        if(temp){
-            str[i++] = '\n';
-        }
-    }
-
-    str[i] = '\0';
-    if (result) {
-        *result = RLE_LIST_SUCCESS;
-    }
-    return str;
-}
+        temp = temp->nex
