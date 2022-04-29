@@ -15,7 +15,11 @@
 #define SPACE_CHARACTER ' '
 #define AT_CHARACTER '@'
 
-char invertedRLEList(char originalLetter) {
+//Returns '@' if originalLetter is a space character and vice versa.
+//This function is used by RLEListMap in order to print an inverted version 
+//of the picture given in 'main' if the user requires it.
+char invertCharacter(char originalLetter) 
+{
     switch (originalLetter) {
         case AT_CHARACTER: {
             return SPACE_CHARACTER;
@@ -29,11 +33,12 @@ char invertedRLEList(char originalLetter) {
     }
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
     assert(argc == EXPECTED_ARGUMENTS_COUNT);
-    if(argc != EXPECTED_ARGUMENTS_COUNT){
+    if (argc != EXPECTED_ARGUMENTS_COUNT) {
         printf("insufficient amount of parameters given");
-        return  ERROR_CODE;
+        return ERROR_CODE;
     }
     FILE* sourceFileStream = fopen(argv[SOURCE_ARG_INDEX], "r");
     FILE* targetFileStream = fopen(argv[TARGET_ARG_INDEX], "w");
@@ -44,24 +49,25 @@ int main(int argc, char** argv) {
     }
 
     if (strcmp(argv[FLAG_ARG_INDEX], ENCODED_FLAG) == 0) {
-        if(asciiArtPrintEncoded(orignialArt, targetFileStream) != RLE_LIST_SUCCESS) {
-            RLEListDestroy(orignialArt);
-            return ERROR_CODE;
-        }
-
-    }
-    else if (strcmp(argv[FLAG_ARG_INDEX], INVERTED_FLAG) == 0) {
-        if (RLEListMap(orignialArt, invertedRLEList) != RLE_LIST_SUCCESS ||
-            asciiArtPrint(orignialArt, targetFileStream) != RLE_LIST_SUCCESS) {
+        if (asciiArtPrintEncoded(orignialArt, targetFileStream) != RLE_LIST_SUCCESS) {
             RLEListDestroy(orignialArt);
             return ERROR_CODE;
         }
     }
-    else {//if the provided parameter is not fitting either options
-        fclose(sourceFileStream);
-        fclose(targetFileStream);
-        RLEListDestroy(orignialArt);
-        return ERROR_CODE;
+    else {
+        if (strcmp(argv[FLAG_ARG_INDEX], INVERTED_FLAG) == 0) {
+            if (RLEListMap(orignialArt, invertCharacter) != RLE_LIST_SUCCESS ||
+                asciiArtPrint(orignialArt, targetFileStream) != RLE_LIST_SUCCESS) {
+                RLEListDestroy(orignialArt);
+                return ERROR_CODE;
+            }
+        }
+        else {
+            fclose(sourceFileStream);
+            fclose(targetFileStream);
+            RLEListDestroy(orignialArt);
+            return ERROR_CODE;
+        }
     }
 
     RLEListDestroy(orignialArt);

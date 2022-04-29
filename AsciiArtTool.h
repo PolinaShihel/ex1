@@ -25,7 +25,8 @@
  *
  * @param inStream - FILE pointer to be used to get the contents of the file holding the asciiArt
  * @return
- *       RLE list containing the ASCIIArt in it's compressed state
+ *	 NULL if the file pointer is invalid
+ *	 RLE list containing the ASCIIArt in it's compressed state
  */
 RLEList asciiArtRead(FILE* inStream);
 

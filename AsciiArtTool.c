@@ -1,8 +1,11 @@
 #include "AsciiArtTool.h"
 
+#define ENTER_CHARACTER_LEN 1
+#define NULL_CHARACTER_LEN 1
+
 RLEList asciiArtRead(FILE* inStream)
 {
-    if (!inStream) {//instructed to return null if the file pointer is invalid
+    if (!inStream) {
         return NULL;
     }
     char currentLetter = fgetc(inStream);
@@ -25,12 +28,12 @@ RLEListResult asciiArtPrint(RLEList list, FILE* outStream)
         return RLE_LIST_NULL_ARGUMENT;
     }
 
-    char* picture = malloc((RLEListSize(list) + 2) * sizeof(char));
+    char* picture = malloc((RLEListSize(list) + ENTER_CHARACTER_LEN + NULL_CHARACTER_LEN) * sizeof(char));
     if (!picture) {
         return RLE_LIST_OUT_OF_MEMORY;
     }
 
-    char* picturePointer = picture;
+    char* ptr = picture;
     int listSize = RLEListSize(list);
     for (int i = 0; i < listSize; i++) {
         RLEListResult result;
@@ -38,11 +41,11 @@ RLEListResult asciiArtPrint(RLEList list, FILE* outStream)
         if (result != RLE_LIST_SUCCESS) {
             return result;
         }
-        *picturePointer = currentLetter;
-        picturePointer++;
+        *ptr = currentLetter;
+        ptr++;
     }
-    *picturePointer = '\n';
-    *picturePointer = '\0';
+    *ptr = '\n';
+    *ptr = '\0';
 
     int fputsResult = fputs(picture, outStream) == EOF ? RLE_LIST_ERROR : RLE_LIST_SUCCESS;
     free(picture);
